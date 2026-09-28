@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discuss an article
+    url: ../../discussions
+    about: Questions and comments on a published article belong in Discussions.
+  - name: Contributing guide
+    url: ../../blob/main/CONTRIBUTING.md
+    about: How to write and submit a case study.

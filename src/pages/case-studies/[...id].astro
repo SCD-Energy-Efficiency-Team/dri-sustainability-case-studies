@@ -1,0 +1,126 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Comments from '../../components/Comments.astro';
+import { getArticles, formatDate, type Article } from '../../lib/articles';
+import { roleLabel } from '../../lib/taxonomy';
+import { REPO_URL } from '../../site.config';
+import { url } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.map((article) => ({ params: { id: article.id }, props: { article } }));
+}
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const { data } = article;
+const { Content, headings } = await render(article);
+
+// Only h2/h3 make a useful contents list; deeper levels are usually detail.
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const sourcePath = `content/case-studies/${article.id}.md`;
+---
+
+<Base title={data.title} description={data.description}>
+  <div class="article-head">
+    <div class="wrap article-head__inner stack" style="--stack-gap:.85rem">
+      <p class="breadcrumb">
+        <a href={url('/case-studies')}>Case studies</a>
+      </p>
+
+      <h1>{data.title}</h1>
+      <p style="color:var(--text-muted); font-size:var(--step-1)">{data.description}</p>
+
+      <div class="byline">
+        <span><strong>{data.author.join(', ')}</strong></span>
+        {data.organisation && <span>{data.organisation}</span>}
+        <span aria-hidden="true">·</span>
+        <time datetime={data.date.toISOString().slice(0, 10)}>{formatDate(data.date)}</time>
+        {
+          data.updated && (
+            <span>
+              (updated <time datetime={data.updated.toISOString().slice(0, 10)}>{formatDate(data.updated)}</time>)
+            </span>
+          )
+        }
+      </div>
+
+      <ul class="pill-row">
+        {data.roles.map((r) => <li><a class="pill" href={url(`/roles/${r}`)}>{roleLabel(r)}</a></li>)}
+        {data.tags.map((t) => <li><a class="pill" href={url(`/tags/${t}`)}>#{t}</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap article-layout">
+    <article>
+      {
+        data.timeSensitive && (
+          <p class="callout" style="margin-bottom:1.75rem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+              <path d="M12 7v5.4l3.2 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span>
+              <strong>Time-sensitive.</strong> The author flagged this as containing details —
+              prices, tool versions, policies — that date quickly. It was last checked on{' '}
+              {formatDate(data.updated ?? data.date)}. If you know it has changed, please say so
+              in the discussion below or open a pull request.
+            </span>
+          </p>
+        )
+      }
+
+      <div class="prose"><Content /></div>
+
+      {
+        data.sources.length > 0 && (
+          <section class="prose sources" style="margin-top:3rem">
+            <h2>Sources</h2>
+            <ol>
+              {data.sources.map((s) => (
+                <li>
+                  <a href={s.url} rel="noopener">{s.title}</a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )
+      }
+
+      <footer class="article-footer">
+        <p>
+          Spotted an error, or want to add to this?{' '}
+          <a href={`${REPO_URL}/edit/main/${sourcePath}`} rel="noopener">Edit this page on GitHub</a>{' '}
+          or leave a comment below.
+        </p>
+        <p>
+          Published under{' '}
+          <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener license">CC BY 4.0</a>{' '}
+          by {data.author.join(', ')}.
+        </p>
+      </footer>
+
+      <Comments />
+    </article>
+
+    {
+      toc.length > 1 && (
+        <nav class="toc" aria-labelledby="toc-heading">
+          <h2 id="toc-heading">On this page</h2>
+          <ol>
+            {toc.map((h) => (
+              <li data-depth={h.depth}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+  </div>
+</Base>

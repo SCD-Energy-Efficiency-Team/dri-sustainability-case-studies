@@ -1,0 +1,63 @@
+---
+import { GISCUS, REPO_URL, isGiscusConfigured } from '../site.config';
+
+/**
+ * Discussion thread for an article via Giscus.
+ */
+const configured = isGiscusConfigured();
+---
+
+<section class="comments" aria-labelledby="comments-heading">
+  <h2 id="comments-heading">Discussion</h2>
+  <p class="comments__note">
+    Comments are GitHub Discussions. Sign in with a GitHub account to reply.
+  </p>
+
+  {
+    configured ? (
+      <>
+        <div class="giscus" />
+        <script
+          is:inline
+          src="https://giscus.app/client.js"
+          data-repo={GISCUS.repo}
+          data-repo-id={GISCUS.repoId}
+          data-category={GISCUS.category}
+          data-category-id={GISCUS.categoryId}
+          data-mapping={GISCUS.mapping}
+          data-strict="1"
+          data-reactions-enabled={GISCUS.reactionsEnabled}
+          data-emit-metadata="0"
+          data-input-position={GISCUS.inputPosition}
+          data-theme="preferred_color_scheme"
+          data-lang={GISCUS.lang}
+          data-loading="lazy"
+          crossorigin="anonymous"
+          async
+        />
+        <script>
+          addEventListener('message', (event) => {
+            if (event.origin !== 'https://giscus.app') return;
+            if (!event.data?.giscus?.discussion) return;
+            const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+            document
+              .querySelector<HTMLIFrameElement>('iframe.giscus-frame')
+              ?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
+          });
+        </script>
+      </>
+    ) : (
+      <p class="callout">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
+          <path d="M12 7.5v5.5M12 16.2v.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+        <span>
+          Comments are not configured yet. In the meantime, start a thread in{' '}
+          <a href={`${REPO_URL}/discussions`} rel="noopener">GitHub Discussions</a>. Maintainers:
+          see <code>src/site.config.ts</code> to enable Giscus.
+        </span>
+      </p>
+    )
+  }
+</section>

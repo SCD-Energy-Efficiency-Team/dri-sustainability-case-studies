@@ -1,0 +1,33 @@
+name: Report out-of-date content
+description: Flag an article whose facts, prices, versions or links have gone stale.
+title: '[Stale] '
+labels: ['out of date']
+body:
+  - type: input
+    id: article
+    attributes:
+      label: Which article?
+      description: Paste the URL or the filename.
+    validations:
+      required: true
+
+  - type: textarea
+    id: whats-wrong
+    attributes:
+      label: What is out of date?
+      description: Quote the passage if you can, and say what has changed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: source
+    attributes:
+      label: Source for the update
+      description: A link to the current information, if you have one.
+
+  - type: checkboxes
+    id: offer
+    attributes:
+      label: Would you like to fix it?
+      options:
+        - label: I am happy to open a pull request with the correction.

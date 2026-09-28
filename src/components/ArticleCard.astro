@@ -1,0 +1,41 @@
+---
+import type { Article } from '../lib/articles';
+import { formatDate } from '../lib/articles';
+import { roleLabel } from '../lib/taxonomy';
+import { url } from '../lib/url';
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const { data } = article;
+---
+
+<li
+  class="card"
+  data-article
+  data-roles={data.roles.join(' ')}
+  data-tags={data.tags.join(' ')}
+  data-search={[data.title, data.description, ...data.tags, ...data.author].join(' ').toLowerCase()}
+>
+  <div class="card__meta">
+    <time datetime={data.date.toISOString().slice(0, 10)}>{formatDate(data.date)}</time>
+  </div>
+
+  <h3 class="card__title">
+    <a href={url(`/case-studies/${article.id}`)}>{data.title}</a>
+  </h3>
+
+  <p class="card__desc">{data.description}</p>
+
+  <ul class="pill-row" aria-label="Tags">
+    {data.tags.slice(0, 4).map((t) => <li><a class="pill" href={url(`/tags/${t}`)}>#{t}</a></li>)}
+  </ul>
+
+  <div class="card__meta">
+    <span>{data.author.join(', ')}</span>
+    <span aria-hidden="true">·</span>
+    <span>{data.roles.map(roleLabel).join(', ')}</span>
+  </div>
+</li>

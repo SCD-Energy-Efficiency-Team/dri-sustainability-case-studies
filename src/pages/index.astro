@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import { getArticles, plural, tally } from '../lib/articles';
+import { ROLES } from '../lib/taxonomy';
+import { SITE, REPO_URL } from '../site.config';
+import { url } from '../lib/url';
+
+const articles = await getArticles();
+const latest = articles.slice(0, 6);
+const roleCounts = new Map(tally(articles, (a) => a.data.roles).map((r) => [r.value, r.count]));
+const tagCount = tally(articles, (a) => a.data.tags).length;
+---
+
+<Base title={`${SITE.title} — ${SITE.tagline}`} bareTitle>
+  <section class="hero">
+    <div class="wrap stack" style="--stack-gap:1.15rem; max-width:var(--page)">
+      <h1>Case Studies for Sustainability Across Digital Research Infrastructure</h1>
+      <p class="lede">
+        Trends in carbon emissions from digital research infrastructure (DRI) are a serious concern, and software engineers, computational scientists, HPC facilitators, project managers and more are now required to think about sustainability in this space.
+      </p>
+      <p class="lede">
+        Many pages now exist showing the huge landscape of resources available for this, but it's not always clear what is practically being done by people in roles similar to yours. 
+      </p>
+      <p class="lede">
+      This is a knowledge database for people to share how they are tackling sustainability in their job within DRI. 
+      </p>
+      <div class="button-row" style="margin-top:.5rem">
+        <a class="button button--primary" href={url('/case-studies')}>Browse case studies</a>
+        <a class="button button--ghost" href={url('/contribute')}>Contribute</a>
+      </div>
+      <p style="color:var(--text-muted); font-size:var(--step--1)">
+        {plural(articles.length, 'article')} · {plural(tagCount, 'topic')} · open to contributors
+      </p>
+    </div>
+  </section>
+  <section class="section wrap" style="padding-top:0">
+    <div class="section__head">
+      <div>
+        <h2>Latest contributions</h2>
+      </div>
+      <a href={url('/case-studies')}>All articles →</a>
+    </div>
+
+    {
+      latest.length > 0 ? (
+        <ul class="card-grid">
+          {latest.map((article) => (
+            <ArticleCard article={article} />
+          ))}
+        </ul>
+      ) : (
+        <div class="no-results">
+          <p>No articles published yet.</p>
+          <p style="margin-top:.8rem">
+            <a class="button button--primary" href={url('/contribute')}>
+              Read the contribution guide
+            </a>
+          </p>
+        </div>
+      )
+    }
+  </section>
+
+</Base>

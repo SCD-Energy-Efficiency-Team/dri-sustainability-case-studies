@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getArticles, plural, tally } from '../../lib/articles';
+import { ROLES } from '../../lib/taxonomy';
+import { url } from '../../lib/url';
+
+const articles = await getArticles();
+const counts = new Map(tally(articles, (a) => a.data.roles).map((r) => [r.value, r.count]));
+---
+
+<Base
+  title="Browse by role"
+  description="Find articles written for software engineers, HPC facilitators, data scientists, project managers and others working in digital research infrastructure."
+>
+  <div class="wrap section">
+    <div class="section__head">
+      <div>
+        <h1>Browse by role</h1>
+        <p>
+          Each article names the roles it was written for. Is your role missing? Let us know!
+        </p>
+      </div>
+    </div>
+
+    <ul class="card-grid">
+      {
+        Object.entries(ROLES).map(([id, role]) => (
+          <li class="card">
+            <h2 class="card__title">
+              <a href={url(`/roles/${id}`)}>{role.label}</a>
+            </h2>
+            <p class="card__desc">{role.description}</p>
+            <div class="card__meta">
+              <span>{plural(counts.get(id as keyof typeof ROLES) ?? 0, 'article')}</span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Base>

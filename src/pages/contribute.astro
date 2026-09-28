@@ -1,0 +1,161 @@
+---
+import Base from '../layouts/Base.astro';
+import { ROLES } from '../lib/taxonomy';
+import { REPO_URL } from '../site.config';
+
+const template = `---
+title: "Example title"
+description: "Short description"
+roles:
+  - software-engineer
+tags:
+  - cpp
+  - cuda
+  - gpu
+  - profiling
+author: "@exampleuser"
+organisation: "Example University"
+date: 2026-08-26
+timeSensitive: false
+sources:
+  - title: "NVIDIA Nsight Compute documentation"
+    url: "https://docs.nvidia.com/nsight-compute/"
+---
+
+## What we were trying to solve
+
+One or two paragraphs of context...`;
+---
+
+<Base
+  title="Contribute"
+  description="How to submit a case study: add one Markdown file, open a pull request, answer the template questions."
+>
+  <div class="wrap section">
+    <div class="section__head section__head--wide">
+      <div>
+        <h1>Contributing</h1>
+        <p> Share your experiences of working on sustainability in your role. </p>
+        <p> This site is only useful if it reflects what people are really doing, including the things that did not work!
+        </p>
+      </div>
+    </div>
+
+    <div class="prose prose--wide">
+      <h2>How to submit an article</h2>
+      <ol>
+        <li>Fork the repository and create a branch.</li>
+        <li>
+          Copy <code>templates/article-template.md</code> to
+          <code>content/case-studies/your-article-name.md</code>. The filename becomes the
+          article's web address, so use lowercase words separated by hyphens.
+        </li>
+        <li>Fill in the YAML header and write the body in Markdown (see Article format below).</li>
+        <li>
+          Open a pull request, answering the few questions in the description.
+        </li>
+        <li>
+          A maintainer reviews as a quality check. 
+        </li>
+      </ol>
+      <p>
+      If you haven't got a fully formed idea, or you need help with the process,  
+         <a href={`${REPO_URL}/issues/new/choose`} rel="noopener"> open an issue</a> to get feedback.
+      </p>
+
+      <h2>Article format</h2>
+      <p>
+      Each article is a single Markdown file with a YAML header. </p>
+      <p>The header is used to ensure all required fields are filled when 
+        making a pull request.
+      </p>
+      <pre><code>{template}</code></pre>
+
+      <h3>Fields</h3>
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Required</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>title</code></td><td>Yes</td><td>8–100 characters.</td></tr>
+          <tr>
+            <td><code>description</code></td><td>Yes</td>
+            <td>40–300 characters. Shown on cards and in search results.</td>
+          </tr>
+          <tr>
+            <td><code>roles</code></td><td>Yes</td>
+            <td>1–4 from the fixed list below.</td>
+          </tr>
+          <tr>
+            <td><code>tags</code></td><td>Yes</td>
+            <td>1–8, lowercase kebab-case. Reuse existing tags where you can.</td>
+          </tr>
+          <tr>
+            <td><code>author</code></td><td>Yes</td>
+            <td>Your GitHub handle, or a list of handles for co-authors.</td>
+          </tr>
+          <tr><td><code>organisation</code></td><td>No</td><td>Institution or facility.</td></tr>
+          <tr><td><code>date</code></td><td>Yes</td><td><code>YYYY-MM-DD</code>.</td></tr>
+          <tr>
+            <td><code>updated</code></td><td>No</td>
+            <td>Set on substantive revisions. Must not precede <code>date</code>.</td>
+          </tr>
+          <tr>
+            <td><code>timeSensitive</code></td><td>No</td>
+            <td>
+              <code>true</code> if the article cites prices, tool versions or draft policy. Renders
+              a dated warning banner.
+            </td>
+          </tr>
+          <tr>
+            <td><code>sources</code></td><td>No</td>
+            <td>Title/URL pairs. Strongly encouraged, especially for any figures you quote.</td>
+          </tr>
+          <tr>
+            <td><code>draft</code></td><td>No</td>
+            <td><code>true</code> keeps it out of the published site while you work.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Roles</h2>
+      <p>Who is this for? Pick the roles that would be most interested in your contribution.</p>
+      <ul>
+        {
+          Object.entries(ROLES).map(([id, role]) => (
+            <li>
+              <code>{id}</code>: {role.description}
+            </li>
+          ))
+        }
+      </ul>
+
+      <h2>What makes a good article</h2>
+      <ul>
+        <li>
+          <strong>Be specific.</strong> Often sustainabiity advice is less practical because it is too generic. What is relevant to your actual role?
+        </li>
+        <li>
+          <strong>Say what it cost.</strong> Effort, money, disruption, etc.
+        </li>
+        <li>
+          <strong>Include anything that did not work.</strong> 
+        </li>
+        <li>
+          <strong>Cite any sources.</strong> 
+        </li>
+        <li>
+          Only submit content you wrote or have the right to
+          publish. Everything here is released under CC&nbsp;BY&nbsp;4.0.
+        </li>
+      </ul>
+
+      <h2>Commenting</h2>
+      <p>
+        Every article has a discussion thread using GitHub Discussions. Sign in with a GitHub
+        account to add a question/comment.
+      </p>
+
+    </div>
+  </div>
+</Base>

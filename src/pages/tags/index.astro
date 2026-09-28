@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getArticles, tally } from '../../lib/articles';
+import { url } from '../../lib/url';
+
+const articles = await getArticles();
+const tags = tally(articles, (a) => a.data.tags);
+---
+
+<Base title="Tags" description="Every topic covered by case studies, by number of articles.">
+  <div class="wrap section">
+    <div class="section__head section__head--wide">
+      <div>
+        <h1>Tags</h1>
+        <p>
+        When submitting an article, before inventing a new tag check whether an existing one already fits.
+        </p>
+      </div>
+      <span style="color:var(--text-muted);font-size:var(--step--1)">{tags.length} tags</span>
+    </div>
+
+    {
+      tags.length > 0 ? (
+        <ul class="pill-row" style="gap:.55rem">
+          {tags.map((t) => (
+            <li>
+              <a class="pill" href={url(`/tags/${t.value}`)} style="font-size:var(--step--1);padding:.3rem .8rem">
+                #{t.value} <span style="opacity:.6;font-weight:500">{t.count}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div class="no-results">No tags yet. These appear as articles are published.</div>
+      )
+    }
+  </div>
+</Base>

@@ -1,0 +1,31 @@
+{
+  "name": "dri-sustainability-case-studies",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Community case studies on sustainability in digital research infrastructure",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "check:links": "node scripts/check-links.mjs",
+    "validate": "npm run check && npm run build && npm run check:links",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.5",
+    "typescript": "^5.9.3"
+  },
+  "allowScripts": {
+    "esbuild": true
+  }
+}

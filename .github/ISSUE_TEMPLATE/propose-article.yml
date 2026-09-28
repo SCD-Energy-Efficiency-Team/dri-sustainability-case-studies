@@ -1,0 +1,78 @@
+name: Propose an article
+description: Suggest a case study you would like to write, and get feedback before you start.
+title: '[Article] '
+labels: ['article proposal']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this if you want to check the scope or angle before writing.
+        If your article is already written, open a pull request instead.
+
+  - type: input
+    id: title
+    attributes:
+      label: Working title
+      placeholder: Right-sizing CI pipelines on a research software group
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What would it cover?
+      description: A few sentences on what you did and what a reader would take away.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: roles
+    attributes:
+      label: Target role(s)
+      description: Who would act on this?
+      options:
+        - label: Software engineer
+        - label: HPC facilitator
+        - label: Data scientist
+        - label: Project manager
+        - label: Compute user
+        - label: DevOps engineer
+        - label: Security engineer
+    validations:
+      required: true
+
+  - type: input
+    id: tags
+    attributes:
+      label: Likely tags
+      description: Comma-separated, lowercase-kebab-case. Check the site's /tags page for existing ones.
+      placeholder: continuous-integration, caching, cost-reduction
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: What evidence or numbers can you include?
+      description: >-
+        Even rough or caveated figures are valuable. Say how you measured, if you did.
+        Answer "none" if you don't have any — that is fine.
+
+  - type: dropdown
+    id: timesensitive
+    attributes:
+      label: Would this contain time-sensitive information?
+      description: Prices, specific tool versions, or policy under consultation.
+      options:
+        - 'No'
+        - 'Yes'
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Licensing
+      options:
+        - label: >-
+            I would be writing original content (or content I have the right to republish),
+            and I am happy for it to be published under CC BY 4.0.
+          required: true

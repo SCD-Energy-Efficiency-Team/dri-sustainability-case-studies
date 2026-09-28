@@ -1,0 +1,162 @@
+---
+import Base from '../../layouts/Base.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getArticles, tally } from '../../lib/articles';
+import { roleLabel } from '../../lib/taxonomy';
+
+/**
+ * Browse page.
+ *
+ * Every article is rendered into the HTML and filtering happens client-side by
+ * toggling `hidden`. The corpus is small and this keeps the page a single
+ * static file that works without a search backend; if the collection grows
+ * past a few hundred articles, swap the script for a prebuilt index.
+ */
+const articles = await getArticles();
+const roles = tally(articles, (a) => a.data.roles);
+const tags = tally(articles, (a) => a.data.tags);
+---
+
+<Base
+  title="Browse case studies"
+  description="Filter every contributed article by role and topic."
+>
+  <div class="wrap section">
+    <div class="section__head">
+      <div>
+        <h1>Browse</h1>
+        <p>Filter by role or tags.</p>
+      </div>
+    </div>
+
+    <div class="browse">
+      <form class="filters" id="filters" aria-label="Filter articles">
+        <div>
+          <label for="q" class="visually-hidden-label" style="display:block;font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:.74rem;color:var(--text-muted);margin-bottom:.6rem">
+            Search
+          </label>
+          <input
+            class="search-input"
+            type="search"
+            id="q"
+            name="q"
+            placeholder="Title, tag or author…"
+            autocomplete="off"
+          />
+        </div>
+
+        <fieldset>
+          <legend>Role</legend>
+          {
+            roles.map((r) => (
+              <label>
+                <input type="checkbox" name="role" value={r.value} />
+                <span>{roleLabel(r.value)}</span>
+                <span class="count">{r.count}</span>
+              </label>
+            ))
+          }
+        </fieldset>
+
+        <fieldset>
+          <legend>Tag</legend>
+          {
+            tags.map((t) => (
+              <label>
+                <input type="checkbox" name="tag" value={t.value} />
+                <span>#{t.value}</span>
+                <span class="count">{t.count}</span>
+              </label>
+            ))
+          }
+        </fieldset>
+
+        <button class="button button--ghost" type="reset">Clear filters</button>
+      </form>
+
+      <div>
+        <div class="results-bar">
+          <p id="result-count" aria-live="polite">{articles.length} articles</p>
+        </div>
+
+        <ul class="card-grid" id="results">
+          {articles.map((article) => <ArticleCard article={article} />)}
+        </ul>
+
+        <div class="no-results" id="empty" hidden>
+          <p><strong>No articles match those filters.</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const form = document.getElementById('filters') as HTMLFormElement | null;
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-article]')];
+  const counter = document.getElementById('result-count');
+  const empty = document.getElementById('empty');
+  const search = document.getElementById('q') as HTMLInputElement | null;
+  if (!form || !counter || !empty || !search) throw new Error('Browse page markup changed');
+
+  const checked = (name: string) =>
+    new Set(
+      [...form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`)].map(
+        (i) => i.value,
+      ),
+    );
+
+  /** An empty filter group matches everything; within a group, OR; across groups, AND. */
+  const matchesGroup = (selected: Set<string>, values: string[]) =>
+    selected.size === 0 || values.some((v) => selected.has(v));
+
+  function apply() {
+    const roles = checked('role');
+    const tags = checked('tag');
+    const query = search!.value.trim().toLowerCase();
+
+    let visible = 0;
+    for (const card of cards) {
+      const show =
+        matchesGroup(roles, (card.dataset.roles ?? '').split(' ')) &&
+        matchesGroup(tags, (card.dataset.tags ?? '').split(' ')) &&
+        (query === '' || (card.dataset.search ?? '').includes(query));
+      card.hidden = !show;
+      if (show) visible++;
+    }
+
+    counter!.textContent = `${visible} article${visible === 1 ? '' : 's'}`;
+    empty!.hidden = visible > 0;
+    syncUrl(roles, tags, query);
+  }
+
+  /** Keep filter state in the URL so a filtered view can be linked and shared. */
+  function syncUrl(roles: Set<string>, tags: Set<string>, query: string) {
+    const params = new URLSearchParams();
+    for (const [key, set] of [
+      ['role', roles],
+      ['tag', tags],
+    ] as const) {
+      for (const value of set) params.append(key, value);
+    }
+    if (query) params.set('q', query);
+    const search = params.toString();
+    history.replaceState(null, '', search ? `?${search}` : location.pathname);
+  }
+
+  function restoreFromUrl() {
+    const params = new URLSearchParams(location.search);
+    for (const input of form!.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')) {
+      input.checked = params.getAll(input.name).includes(input.value);
+    }
+    search!.value = params.get('q') ?? '';
+  }
+
+  form.addEventListener('change', apply);
+  form.addEventListener('input', apply);
+  // `reset` fires before the fields clear, so read them on the next tick.
+  form.addEventListener('reset', () => setTimeout(apply));
+
+  restoreFromUrl();
+  apply();
+</script>

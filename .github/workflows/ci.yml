@@ -1,0 +1,42 @@
+name: CI
+
+# Validates every pull request: article frontmatter must match the schema in
+# src/content.config.ts, types must check, and the site must build. A
+# contributor gets a specific error naming the file and field rather than a
+# reviewer having to spot it by eye.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+    name: Validate and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check types and article frontmatter
+        run: npm run check
+
+      - name: Build site
+        run: npm run build
+
+      - name: Check for broken internal links
+        run: npm run check:links

@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import logoBanner from '../assets/logos/logo_banner.png';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__grid">
+    <div>
+      <p>This resource was created as part of the <a href="https://uknetdrive.org/">NetDRIVE</a> Community Project EMIT, which is a collaboration between the <a href="https://www.sc.stfc.ac.uk/">Scientific Computing Department</a> and the <a href="https://www.hartree.stfc.ac.uk/">Hartree Centre</a> at <a href="https://www.ukri.org/councils/stfc/">STFC</a> to develop training resources for sustainability across DRI.</p>
+
+      <div class="partners">
+        <Image
+          src={logoBanner}
+          alt="STFC Scientific Computing, NetDRIVE, and STFC Hartree Centre"
+          densities={[1, 2]}
+          loading="lazy"
+        />
+      </div>
+    </div>
+
+    <div>
+      <h2>Licence</h2>
+      <p>
+        Articles are published under{' '}
+        <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener license">CC&nbsp;BY&nbsp;4.0</a>,
+        © their authors. Site code is MIT licensed.
+      </p>
+      <p style="margin-top:.6rem">&copy; {year} contributors.</p>
+    </div>
+  </div>
+</footer>
