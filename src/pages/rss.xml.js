@@ -13,7 +13,7 @@ export async function GET(context) {
       description: article.data.description,
       pubDate: article.data.date,
       author: article.data.author.join(', '),
-      categories: [article.data.type, ...article.data.tags],
+      categories: article.data.tags,
       link: `/case-studies/${article.id}/`,
     })),
     trailingSlash: false,
