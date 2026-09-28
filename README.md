@@ -4,7 +4,9 @@ A community knowledge base of how people are actually tackling sustainability
 in digital research infrastructure (DRI), written by software engineers, HPC
 facilitators, data scientists, project managers and more.
 
-Trends in carbon emissions from digital research infrastructure (DRI) are a serious concern, and software engineers, computational scientists, HPC facilitators, project managers and more are now required to think about sustainability in this space.
+## Motivation
+
+Trends in carbon emissions from digital research infrastructure (DRI) are a serious concern for people working across this space.
 
 Many pages now exist showing the huge landscape of resources available for this, but it's not always clear what is practically being done by people in roles similar to yours.
 
