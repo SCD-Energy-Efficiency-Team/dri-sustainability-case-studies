@@ -1,6 +1,6 @@
 # Community Knowledge Base for Sustainable Computing
 
-A community knowledge base of how people are actually tackling sustainability
+A <a href="https://scd-energy-efficiency-team.github.io/dri-sustainability-case-studies/">community knowledge base</a> of how people are actually tackling sustainability
 in digital research infrastructure (DRI), written by software engineers, HPC
 facilitators, data scientists, project managers and more.
 
