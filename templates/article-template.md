@@ -38,8 +38,8 @@ date: 2026-01-01
 # Optional: set when you substantively revise the article later.
 # updated: 2026-06-01
 
-# Set true if this cites prices, specific tool versions, or draft policy —
-# anything that will date. Shows readers a "last checked" banner.
+# Set true if this cites specific tool versions etc.
+# Shows readers a "last checked" banner.
 timeSensitive: false
 
 # External sources
