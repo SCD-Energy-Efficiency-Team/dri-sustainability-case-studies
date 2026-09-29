@@ -13,6 +13,7 @@
     "preview": "astro preview",
     "check": "astro check",
     "check:links": "node scripts/check-links.mjs",
+    "draft:id": "node scripts/draft-id.mjs",
     "validate": "npm run check && npm run build && npm run check:links",
     "astro": "astro"
   },

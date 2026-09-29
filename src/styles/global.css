@@ -821,6 +821,13 @@ a.pill:hover {
   margin-top: 0.15rem;
 }
 
+/* Unpublished draft */
+.callout--draft {
+  border-color: var(--slate);
+  background: var(--bg-sunken);
+  color: var(--text);
+}
+
 .sources ol {
   padding-inline-start: 1.3rem;
 }

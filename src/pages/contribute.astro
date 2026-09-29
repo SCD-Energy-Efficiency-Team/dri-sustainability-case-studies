@@ -113,7 +113,22 @@ One or two paragraphs of context...`;
           </tr>
           <tr>
             <td><code>draft</code></td><td>No</td>
-            <td><code>true</code> keeps it out of the published site while you work.</td>
+            <td>
+              <code>true</code> keeps it off the home page, browse, role and tag
+              pages and the feed while you work. The article still gets its own
+              web address you can send to a coauthor for comments. Change to
+              <code>false</code> to publish.
+            </td>
+          </tr>
+          <tr>
+            <td><code>draftId</code></td><td>Only for drafts</td>
+            <td>
+              Random characters added to a draft's web address.
+              Run <code>npm run draft:id</code>, or
+              type 6–16 random lowercase letters and digits. Unlisted is not
+              private. Anyone given the link or reading this repository can
+              see the draft, so keep confidential material out of it.
+            </td>
           </tr>
         </tbody>
       </table>
