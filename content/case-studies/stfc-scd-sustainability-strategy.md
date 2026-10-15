@@ -8,10 +8,10 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 # 8–100 characters 
-title: "Reflections on Developing a Ground-Up Sustainability Strategy for the STFC Scientific Computing Department"
+title: "Reflections on a Ground-Up Sustainability Strategy for the STFC Scientific Computing Department"
 
 # 40–300 characters
-description: "The Scientific Computing Department (SCD) in STFC has had an Energy Efficiency Team (EET) since 2022, operating as a voluntary group to encourage different aspects of sustainable computing. In 2025 we proposed an overall sustainability strategy across themes of emissions monitoring, user education, best practice, common sustainability standards, and providing long-term support to sustainability projects, and obtained funding to achieve this. This article sets out how we went about this and what might be useful to other departments."
+description: "This discusses the ground-up sustainability strategy in the STFC Scientific Computing department, including how it was developed, and reflections on what worked and what didn't."
 
 # Roles this is written for. Valid values:
 #   software-engineer, hpc-facilitator, data-scientist, project-manager,
@@ -74,6 +74,8 @@ The headings below are just suggestions
 The STFC Scientific Computing Department (SCD) has several hundred staff involved in maintaining infrastructure used by us and external users (HPC, cloud), maintaining software with thousands of users, and carrying out research.
 
 STFC is a council within UKRI. Both have broad sustainability strategies for aligning to Net Zero targets. UKRI also published a [scoping report](10.5281/zenodo.8199983), outlining ~180 recommendations for DRI. Although useful as guides, these strategies can be too general to apply concrete ideas at the department level.
+
+SCD has had an Energy Efficiency Team (EET) since 2022, operating as a voluntary group to encourage different aspects of sustainable computing. In 2025 we proposed an overall sustainability strategy across themes of emissions monitoring, user education, best practice, common sustainability standards, and providing long-term support to sustainability projects, and obtained funding to achieve this. This article sets out how we went about this and what might be useful to other departments.
 
 
 ## What We Did
