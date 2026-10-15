@@ -63,10 +63,30 @@ const caseStudies = defineCollection({
 
       /** Set true to keep an in-progress article out of the published site. */
       draft: z.boolean().default(false),
+
+      /**
+       * Random string appended to a draft's web address 
+       * ignored once the article is published.
+       */
+      draftId: z
+        .string()
+        .regex(
+          /^[a-z0-9]{6,16}$/,
+          'draftId must be 6 to 16 lowercase letters and digits, e.g. "q7v2m9xk". ' +
+            'Run `npm run draft:id` to generate one, or just type some random characters.',
+        )
+        .optional(),
     })
     .refine((d) => !d.updated || d.updated >= d.date, {
       message: '`updated` cannot be earlier than `date`.',
       path: ['updated'],
+    })
+    .refine((d) => !d.draft || d.draftId, {
+      message:
+        'A draft needs a `draftId`: a random string that is added to its web address ' +
+        'Run `npm run draft:id` to generate ' +
+        'one, or type 6 to 16 random lowercase letters and digits.',
+      path: ['draftId'],
     }),
 });
 

@@ -7,12 +7,22 @@ export type Article = CollectionEntry<'case-studies'>;
  *
  * Drafts are excluded from production builds but kept in `astro dev` so that
  * an author can preview their own work in progress.
+ *
  */
 export async function getArticles(): Promise<Article[]> {
   const articles = await getCollection(
     'case-studies',
     ({ data }) => import.meta.env.DEV || !data.draft,
   );
+  return articles.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+}
+
+/**
+ * Every article including drafts, newest first.
+ * Draft pages are unlisted but not private (anyone with the full link can read it)
+ */
+export async function getAllArticles(): Promise<Article[]> {
+  const articles = await getCollection('case-studies');
   return articles.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 

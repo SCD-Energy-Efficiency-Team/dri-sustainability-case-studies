@@ -48,8 +48,16 @@ sources: []
 #   - title: "Name of the thing you cited"
 #     url: "https://example.org/page"
 
-# Set true to keep this out of the published site while you draft.
+# Set true while you are still working on this. The article is then left out
+# of the home page, browse, role/tag pages and the feed, but it still gets its
+# own web address you can send round for comments.
 draft: false
+
+# Only needed while draft is true. Random characters added to the draft's web
+# address. Run `npm run draft:id`
+# to generate one, or type 6-16 random lowercase letters and digits.
+# Unlisted is not private, so don't put anything confidential.
+# draftId: "q7v2m9xk"
 ---
 
 <!--

@@ -2,14 +2,24 @@
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Comments from '../../components/Comments.astro';
-import { getArticles, formatDate, type Article } from '../../lib/articles';
+import { getAllArticles, formatDate, type Article } from '../../lib/articles';
+import { draftSlug } from '../../lib/drafts';
 import { roleLabel } from '../../lib/taxonomy';
 import { REPO_URL } from '../../site.config';
 import { url } from '../../lib/url';
 
 export async function getStaticPaths() {
-  const articles = await getArticles();
-  return articles.map((article) => ({ params: { id: article.id }, props: { article } }));
+// Drafts included, but they stay out of every index with 
+// a random suffix 
+  const articles = await getAllArticles();
+  return articles.map((article) => ({
+    params: {
+      id: article.data.draft
+        ? draftSlug(article.id, article.data.draftId!)
+        : article.id,
+    },
+    props: { article },
+  }));
 }
 
 interface Props {
@@ -20,12 +30,16 @@ const { article } = Astro.props;
 const { data } = article;
 const { Content, headings } = await render(article);
 
-// Only h2/h3 make a useful contents list; deeper levels are usually detail.
+// A tag page is only built once a published article uses that tag
+const isDraft = data.draft;
+
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const sourcePath = `content/case-studies/${article.id}.md`;
 ---
 
 <Base title={data.title} description={data.description}>
+  {isDraft && <meta slot="head" name="robots" content="noindex, nofollow" />}
+
   <div class="article-head">
     <div class="wrap article-head__inner stack" style="--stack-gap:.85rem">
       <p class="breadcrumb">
@@ -50,14 +64,39 @@ const sourcePath = `content/case-studies/${article.id}.md`;
       </div>
 
       <ul class="pill-row">
-        {data.roles.map((r) => <li><a class="pill" href={url(`/roles/${r}`)}>{roleLabel(r)}</a></li>)}
-        {data.tags.map((t) => <li><a class="pill" href={url(`/tags/${t}`)}>#{t}</a></li>)}
+        {
+          isDraft
+            ? [
+                ...data.roles.map((r) => <li><span class="pill">{roleLabel(r)}</span></li>),
+                ...data.tags.map((t) => <li><span class="pill">#{t}</span></li>),
+              ]
+            : [
+                ...data.roles.map((r) => <li><a class="pill" href={url(`/roles/${r}`)}>{roleLabel(r)}</a></li>),
+                ...data.tags.map((t) => <li><a class="pill" href={url(`/tags/${t}`)}>#{t}</a></li>),
+              ]
+        }
       </ul>
     </div>
   </div>
 
   <div class="wrap article-layout">
     <article>
+      {
+        isDraft && (
+          <p class="callout callout--draft" style="margin-bottom:1.75rem">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 20h4l10-10a2.4 2.4 0 0 0-3.4-3.4L4.6 16.6 4 20Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+            </svg>
+            <span>
+              <strong>Draft.</strong> This case study is still being worked on and is not
+              published. Anyone given the link can still read it, and it is visible to anyone
+              reading the repository, so don't put anything confidential in a draft.
+              Comments on draft articles are deleted on publication, and the random suffix the url is removed.
+            </span>
+          </p>
+        )
+      }
+
       {
         data.timeSensitive && (
           <p class="callout" style="margin-bottom:1.75rem">
